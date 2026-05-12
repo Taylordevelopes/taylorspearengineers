@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import Form from "react-bootstrap/Form";
 
 function Header() {
+  const [isAdmin, setIsAdmin] = useState(false);
   return (
     <>
       <Navbar expand="lg" bg="light" data-bs-theme="light">
@@ -17,6 +20,13 @@ function Header() {
               <Nav.Link href="/blog">Blogs</Nav.Link>
               <Nav.Link href="/music">+Music</Nav.Link>
             </Nav>
+            <Form.Check
+              type="switch"
+              id="admin-switch"
+              label={isAdmin ? "Admin" : "Guest"}
+              checked={isAdmin}
+              onChange={(e) => setIsAdmin(e.target.checked)}
+            />
           </Navbar.Collapse>
         </Container>
       </Navbar>
