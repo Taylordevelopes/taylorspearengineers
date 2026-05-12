@@ -9,8 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tiptap/pm": "^3.22.5",
+    "@tiptap/react": "^3.22.5",
+    "@tiptap/starter-kit": "^3.22.5",
+    "bootstrap": "^5.3.8",
     "next": "16.2.4",
     "react": "19.2.4",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
