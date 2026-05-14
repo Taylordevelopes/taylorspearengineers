@@ -1,0 +1,128 @@
+// lib/api/auth.ts
+
+export async function getBlogs() {
+  const res = await fetch("http://3.143.248.82/blogs", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch blogs: ${res.status} ${res.statusText}`);
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+export async function getBlogBySlug(slug: string) {
+  // Try the most common endpoint pattern first
+  const res = await fetch(`http://3.143.248.82/blogs/${slug}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to fetch blog post: ${res.status} ${res.statusText}. Tried URL: http://3.143.248.82/blogs/${slug}`,
+    );
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+export async function createBlogPost({
+  title,
+  body,
+  slug,
+  published,
+  blogger_id,
+}: {
+  title: string;
+  body: string;
+  slug: string;
+  published: boolean;
+  blogger_id: string;
+}) {
+  const res = await fetch(`http://3.143.248.82/post-blog`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      title,
+      body,
+      slug,
+      published,
+      blogger_id,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to create blog post: ${res.status} ${res.statusText}`,
+    );
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+export async function updateBlogPost({
+  title,
+  body,
+  slug,
+  published,
+}: {
+  title: string;
+  body: string;
+  slug: string;
+  published: boolean;
+}) {
+  const res = await fetch(`http://3.143.248.82/blogs/${slug}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      title,
+      body,
+      slug,
+      published,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to update blog post: ${res.status} ${res.statusText}`,
+    );
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+export async function deleteBlogPost(slug: string) {
+  const res = await fetch(`http://3.143.248.82/blogs/${slug}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to delete blog post: ${res.status} ${res.statusText}`,
+    );
+  }
+
+  const data = await res.json();
+  return data;
+}

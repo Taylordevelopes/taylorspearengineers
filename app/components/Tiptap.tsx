@@ -22,16 +22,30 @@ const ToolbarButton = ({ onClick, active, children }: ToolbarButtonProps) => (
   </button>
 );
 
-const Tiptap = () => {
+type TiptapProps = {
+  content?: string;
+  onChange?: (content: string) => void;
+};
+
+const Tiptap = ({
+  content = "<p>Start writing...</p>",
+  onChange,
+}: TiptapProps) => {
   const editor = useEditor({
     extensions: [StarterKit],
-    content: "<p>Start writing...</p>",
+    content: content,
     immediatelyRender: false,
     editorProps: {
       attributes: {
         class:
           "min-h-[400px] outline-none prose prose-sm max-w-none text-gray-800",
       },
+    },
+    onUpdate: ({ editor }) => {
+      // Get HTML content
+      const html = editor.getHTML();
+      // Call onChange callback if provided
+      onChange?.(html);
     },
   });
 
@@ -42,13 +56,17 @@ const Tiptap = () => {
       {/* Toolbar */}
       <div className="flex items-center gap-1 px-4 py-2 border-b border-gray-200 bg-gray-50 rounded-t-xl">
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
           active={editor.isActive("heading", { level: 1 })}
         >
           H1
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
           active={editor.isActive("heading", { level: 2 })}
         >
           H2
