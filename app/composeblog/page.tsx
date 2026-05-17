@@ -4,11 +4,13 @@ import Tiptap from "../components/Tiptap";
 import { Button, Form } from "react-bootstrap";
 import { createBlogPost } from "../lib/api/blogs";
 import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function page() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const { user } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,19 +18,31 @@ export default function page() {
     console.log("Submitting blog post:", {
       title,
       body: content,
-    });
-
-    const result = await createBlogPost({
-      title,
-      body: content,
-      slug: title.toLowerCase().replace(/\s+/g, "-"),
       published: true,
       blogger_id: user?.id || "",
     });
 
-    alert(
-      `Blog post ready to submit!\n\nTitle: ${title}\n\nBody length: ${content.length} characters`,
-    );
+    try {
+      const result = await createBlogPost({
+        title,
+        body: content,
+        published: true,
+        blogger_id: user?.id || "",
+      });
+
+      console.log("Blog post created successfully:", result);
+      alert("Blog post created successfully!");
+
+      // Optionally clear the form or redirect
+      setTitle("");
+      setContent("");
+      router.push("/blog");
+    } catch (error) {
+      console.error("Failed to create blog post:", error);
+      alert(
+        `Failed to create blog post:\n${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    }
   };
 
   return (

@@ -11,6 +11,7 @@ import { deleteBlogPost } from "../lib/api/blogs";
 
 export default function page() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const router = useRouter();
 
@@ -24,6 +25,8 @@ export default function page() {
       } catch (error) {
         console.error("Error fetching blog posts:", error);
         setPosts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -56,15 +59,22 @@ export default function page() {
         </div>
       )}
 
-      <main className="flex flex-1 w-full max-w-3xl flex-col py-32 px-8 bg-white justify-between">
-        {posts.length > 0 ? (
-          posts.map((post, index) => (
-            <div key={post.id}>
-              <div className="grid grid-cols-[1fr_auto_auto] gap-4 py-4 items-center">
+      <main className="flex flex-1 w-full max-w-3xl flex-col py-32 px-8 bg-white">
+        {loading ? (
+          <div className="flex justify-center items-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          </div>
+        ) : posts.length > 0 ? (
+          <div className="space-y-2">
+            {posts.map((post) => (
+              <div
+                key={post.id}
+                className="grid grid-cols-[1fr_auto_auto] gap-4 py-2 items-center"
+              >
                 <Link href={`/blog/${post.slug}`} className="hover:underline">
                   {post.title}
                 </Link>
-                <span className="text-gray-600">
+                <span className="text-gray-600 text-sm">
                   {formatUTCDate(post.created_at)}
                 </span>
                 {user && (
@@ -90,9 +100,8 @@ export default function page() {
                   </button>
                 )}
               </div>
-              {index < posts.length - 1 && <hr className="border-gray-200" />}
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
           <p className="text-center text-gray-500">No blog posts available.</p>
         )}

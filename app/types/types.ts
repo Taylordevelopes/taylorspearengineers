@@ -26,4 +26,18 @@ type BlogPost = {
   updated_at: string;
 };
 
-export type { User, LoginResponse, BlogPost };
+type Apps = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  image_url: string;
+  site_url?: string;
+  download_url?: string;
+  featured: boolean;
+  is_phone_app: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type { User, LoginResponse, BlogPost, Apps };

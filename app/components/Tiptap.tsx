@@ -2,6 +2,9 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
+import { useCallback } from "react";
 
 type ToolbarButtonProps = {
   onClick: () => void;
@@ -32,7 +35,16 @@ const Tiptap = ({
   onChange,
 }: TiptapProps) => {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: "text-blue-600 underline hover:text-blue-800",
+        },
+      }),
+      Underline,
+    ],
     content: content,
     immediatelyRender: false,
     editorProps: {
@@ -48,6 +60,27 @@ const Tiptap = ({
       onChange?.(html);
     },
   });
+
+  const setLink = useCallback(() => {
+    if (!editor) return;
+
+    const previousUrl = editor.getAttributes("link").href;
+    const url = window.prompt("Enter URL:", previousUrl);
+
+    // cancelled
+    if (url === null) {
+      return;
+    }
+
+    // empty
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+
+    // update link
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  }, [editor]);
 
   if (!editor) return null;
 
@@ -83,6 +116,16 @@ const Tiptap = ({
           active={editor.isActive("italic")}
         >
           <span className="italic">I</span>
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          active={editor.isActive("underline")}
+        >
+          <span className="underline">U</span>
+        </ToolbarButton>
+        <div className="w-px h-5 bg-gray-300 mx-1" />
+        <ToolbarButton onClick={setLink} active={editor.isActive("link")}>
+          <span className="text-sm">🔗</span>
         </ToolbarButton>
       </div>
 

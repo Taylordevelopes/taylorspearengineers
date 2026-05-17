@@ -2,7 +2,7 @@
 
 export const formatUTCDate = (
   dateString: string,
-  timeZone: string = "UTC", // Default to UTC, or use 'America/New_York'
+  timeZone: string = "America/New_York", // Default to UTC, or use 'America/New_York'
   locale: string = "en-US",
 ): string => {
   const date = new Date(dateString);

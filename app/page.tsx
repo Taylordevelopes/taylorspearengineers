@@ -44,13 +44,14 @@ export default function Home() {
             height={300}
           />
         </div>
+
         <p className="text-center">
-          The mission is simple, but not easy and subject to change. I love
-          building systems and unique applications of all types that are unique
-          to me but bring value to the world and the people that use them. My
-          name is Taylor, thanks for stopping by and please subscribe to my
-          monthly newsletter, from music to code and everything in between. I
-          love connecting with people! Together let's Push the world forward.
+          The mission is simple, but not easy. I love building systems and
+          unique applications of all types that bring value to the world and the
+          people that use them. Thanks for stopping by and please subscribe to
+          my monthly newsletter, from code, music, books and everything in
+          between. I love connecting with people! Together let's Push The World
+          Forward.
         </p>
         {/* <div className="flex flex-row gap-4">
           <Button variant="outline-secondary">+Music </Button>

@@ -65,7 +65,7 @@ function Header() {
     <>
       <Navbar expand="lg" bg="light" data-bs-theme="light">
         <Container>
-          <Navbar.Brand href="/">Spearitual Tech</Navbar.Brand>
+          <Navbar.Brand href="/">Spearitual LLC</Navbar.Brand>
           <Navbar.Toggle aria-controls="main-nav" />
           <Navbar.Collapse id="main-nav">
             <Nav className="me-auto">
