@@ -46,11 +46,12 @@ export default function Home() {
         </div>
 
         <p className="text-center">
-          The mission is simple, but not easy. I building systems and unique
-          applications of all types that bring value to the world and the people
-          that use them. Thanks for stopping by and please subscribe to my
-          monthly newsletter, from code, music, books and everything in between.
-          I love connecting with people! Together let's Push The World Forward.
+          The mission is simple, but not easy. I am passionate about building
+          scalable systems and unique applications of all types that bring value
+          to the world and the people that use them. Thanks for stopping by and
+          please subscribe to my monthly newsletter, from code, music, books and
+          everything in between. I love connecting with people! Together let's
+          Push The World Forward.
         </p>
         {/* <div className="flex flex-row gap-4">
           <Button variant="outline-secondary">+Music </Button>
