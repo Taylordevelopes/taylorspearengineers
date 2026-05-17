@@ -1,7 +1,7 @@
 // lib/api/auth.ts
 
 export async function getBlogs() {
-  const res = await fetch("http://3.143.248.82/blogs", {
+  const res = await fetch("https://api.spearitual.xyz/blogs", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export async function getBlogs() {
 
 export async function getBlogBySlug(slug: string) {
   // Try the most common endpoint pattern first
-  const res = await fetch(`http://3.143.248.82/blogs/${slug}`, {
+  const res = await fetch(`https://api.spearitual.xyz/blogs/${slug}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -27,7 +27,7 @@ export async function getBlogBySlug(slug: string) {
 
   if (!res.ok) {
     throw new Error(
-      `Failed to fetch blog post: ${res.status} ${res.statusText}. Tried URL: http://3.143.248.82/blogs/${slug}`,
+      `Failed to fetch blog post: ${res.status} ${res.statusText}. Tried URL: https://api.spearitual.xyz/blogs/${slug}`,
     );
   }
 
@@ -46,7 +46,7 @@ export async function createBlogPost({
   published: boolean;
   blogger_id: string;
 }) {
-  const res = await fetch(`http://3.143.248.82/blogs/post-blog`, {
+  const res = await fetch(`https://api.spearitual.xyz/blogs/post-blog`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -92,7 +92,7 @@ export async function updateBlogPost({
   slug: string;
   published: boolean;
 }) {
-  const res = await fetch(`http://3.143.248.82/blogs/${slug}`, {
+  const res = await fetch(`https://api.spearitual.xyz/blogs/${slug}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -117,7 +117,7 @@ export async function updateBlogPost({
 }
 
 export async function deleteBlogPost(slug: string) {
-  const res = await fetch(`http://3.143.248.82/blogs/${slug}`, {
+  const res = await fetch(`https://api.spearitual.xyz/blogs/${slug}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

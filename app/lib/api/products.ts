@@ -2,7 +2,7 @@ import { Apps } from "@/app/types/types";
 
 // Get all apps
 export async function getApps() {
-  const res = await fetch("http://3.143.248.82/products", {
+  const res = await fetch("https://api.spearitual.xyz/products", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export async function getApps() {
 
 // Get single app by slug
 export async function getAppBySlug(slug: string) {
-  const res = await fetch(`http://3.143.248.82/products/${slug}`, {
+  const res = await fetch(`https://api.spearitual.xyz/products/${slug}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export async function getAppBySlug(slug: string) {
 
   if (!res.ok) {
     throw new Error(
-      `Failed to fetch product: ${res.status} ${res.statusText}. Tried URL: http://3.143.248.82/products/${slug}`,
+      `Failed to fetch product: ${res.status} ${res.statusText}. Tried URL: https://api.spearitual.xyz/products/${slug}`,
     );
   }
 
@@ -57,7 +57,7 @@ export async function createApp({
   featured: boolean;
   is_phone_app: boolean;
 }) {
-  const res = await fetch(`http://3.143.248.82/products`, {
+  const res = await fetch(`https://api.spearitual.xyz/products`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -112,7 +112,7 @@ export async function updateApp({
   featured: boolean;
   is_phone_app: boolean;
 }) {
-  const res = await fetch(`http://3.143.248.82/products/${slug}`, {
+  const res = await fetch(`https://api.spearitual.xyz/products/${slug}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -142,7 +142,7 @@ export async function updateApp({
 
 // Delete a app
 export async function deleteApp(slug: string) {
-  const res = await fetch(`http://3.143.248.82/products/${slug}`, {
+  const res = await fetch(`https://api.spearitual.xyz/products/${slug}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

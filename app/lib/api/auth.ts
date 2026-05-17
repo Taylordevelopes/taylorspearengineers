@@ -1,7 +1,7 @@
 // lib/api/auth.ts
 
 export async function login(email: string, password: string) {
-  const res = await fetch("http://3.143.248.82/login", {
+  const res = await fetch("https://api.spearitual.xyz/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

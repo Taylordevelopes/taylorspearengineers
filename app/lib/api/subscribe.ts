@@ -1,7 +1,7 @@
 // lib/api/auth.ts
 
 export async function subscribe(email: string) {
-  const res = await fetch("http://3.143.248.82/subscribe", {
+  const res = await fetch("https://api.spearitual.xyz/subscribe", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
