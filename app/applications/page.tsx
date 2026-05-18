@@ -202,7 +202,7 @@ export default function page() {
           Spearitual Applications
         </h1>
         <p className="text-center text-gray-600">
-          Applications built in the factory of Spearitual LLC.
+          Developed by Spearitual LLC.
         </p>
         {user && (
           <div className="text-center mb-4">
