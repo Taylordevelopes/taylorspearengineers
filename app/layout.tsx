@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "SpearITual",
-  description: "Spearitual llc - Software Development Company",
+  description: "Spearitual LLC - Software Development Company",
 };
 
 export default function RootLayout({
