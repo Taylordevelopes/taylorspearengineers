@@ -8,6 +8,8 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useAuth } from "../context/AuthContext";
+import Image, { StaticImageData } from "next/image";
+import logo from "../../public/SpearitualCompany_logo.png"; // Adjust the path to your logo image
 
 function Header() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -65,7 +67,9 @@ function Header() {
     <>
       <Navbar expand="lg" bg="light" data-bs-theme="light">
         <Container>
-          <Navbar.Brand href="/">Spearitual LLC</Navbar.Brand>
+          <Navbar.Brand href="/">
+            <Image src={logo} alt="Spearitual LLC" width={150} height={50} />
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="main-nav" />
           <Navbar.Collapse id="main-nav">
             <Nav className="me-auto">

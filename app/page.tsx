@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { subscribe } from "./lib/api/subscribe";
 import { useState } from "react";
+import HeroSlider from "./components/HeroSlider";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -31,27 +32,16 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans ">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-16 px-16 bg-white ">
-        <h1 className="flex flex-col text-4xl text-center font-bold">
-          Taylor Spear
-        </h1>
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-16 px-8 bg-white ">
+        <HeroSlider />
 
-        <div className="p-6">
-          <Image
-            src="/taylor-spear.jpg" // Route from the public folder
-            alt="Profile Picture"
-            width={300}
-            height={300}
-          />
-        </div>
-
-        <p className="text-center">
-          The mission is simple, but not easy. I am passionate about building
+        <p className="text-center pt-10 text-lg md:text-xl max-w-2xl text-gray-800 font-semibold ">
+          The mission is simple, but not easy. we are passionate about building
           scalable systems and unique applications of all types that bring value
           to the world and the people that use them. Thanks for stopping by and
-          please subscribe to my monthly newsletter. From coding to music, books
-          and everything in between. I love connecting with people! Together
-          let's Push The World Forward.
+          please subscribe to our monthly newsletter. From coding to music,
+          books and everything in between. We love connecting with people!
+          Together Let's Push The World Forward.
         </p>
         {/* <div className="flex flex-row gap-4">
           <Button variant="outline-secondary">+Music </Button>
