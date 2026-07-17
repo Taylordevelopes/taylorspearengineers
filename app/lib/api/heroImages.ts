@@ -1,5 +1,5 @@
 export async function getHeroImages() {
-  const res = await fetch("https://api.spearitual.xyz/hero-images", {
+  const res = await fetch("https://api.spearitual.xyz/heroimages", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
