@@ -4,11 +4,13 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { subscribe } from "./lib/api/subscribe";
 import { useState } from "react";
 import HeroSlider from "./components/HeroSlider";
+import logo from "../public/SpearitualCompany_logo.png";
 
 export default function Home() {
   const [email, setEmail] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [siteMaintenance, setSiteMaintenance] = useState(true);
 
   const handleSubscribe = async (email: string) => {
     try {
@@ -29,6 +31,18 @@ export default function Home() {
       setTimeout(() => setErrorMessage(""), 5000);
     }
   };
+
+  if (siteMaintenance) {
+    return (
+      <div className="flex flex-col flex-1 items-center text-center justify-center font-sans ">
+        <Image src={logo} alt="Spearitual LLC" width={750} height={750} />
+
+        <p className="font-bold">
+          Switching Servers and Making upgrades be back soon.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans ">
