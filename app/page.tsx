@@ -5,6 +5,7 @@ import { subscribe } from "./lib/api/subscribe";
 import { useState } from "react";
 import HeroSlider from "./components/HeroSlider";
 import logo from "../public/SpearitualCompany_logo.png";
+import CountdownTimer from "./components/CountDownTimer";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -40,6 +41,9 @@ export default function Home() {
         <p className="font-bold">
           Switching Servers and Making upgrades be back soon.
         </p>
+        <div>
+          <CountdownTimer targetDate="2026-07-31T00:00:00" />
+        </div>
       </div>
     );
   }
