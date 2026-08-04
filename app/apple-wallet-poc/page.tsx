@@ -1,13 +1,145 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
 import { getWalletPassUrl } from "../lib/api/wallet";
 
 export default function Page(): React.JSX.Element {
   const walletPassUrl = getWalletPassUrl();
+  const [showForm, setShowForm] = useState(true);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    city: "",
+    answer: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    console.log(formData);
+    setShowForm(false);
+  };
+
+  if (showForm)
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#efefec] px-4 py-12">
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="editfirstName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+              placeholder="First Name"
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="editAppDescription">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+              placeholder="Last Name"
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="editAppEmail">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              value={formData.email || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+              placeholder="Enter email address"
+            />
+            <Form.Text className="text-muted">
+              We will never share your email with anyone else.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="editAppPhone">
+            <Form.Label>Phone Number</Form.Label>
+            <Form.Control
+              type="tel"
+              name="phone"
+              value={formData.phone || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+              placeholder="Enter phone number"
+            />
+            <Form.Text className="text-muted">
+              Include country code for international numbers.
+            </Form.Text>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="editAppCity">
+            <Form.Label>City</Form.Label>
+            <Form.Control
+              type="text"
+              name="city"
+              value={formData.city || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+              placeholder="Enter city name"
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="appDescription">
+            <Form.Label>Do you believe art heals? Why?</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="answer"
+              value={formData.answer}
+              placeholder="Type your answer here"
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+            />
+          </Form.Group>
+
+          <Button variant="dark" type="submit">
+            Save Changes
+          </Button>
+        </Form>
+      </main>
+    );
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#efefec] px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="overflow-hidden rounded-[32px] bg-white shadow-[0_30px_80px_rgba(0,0,0,0.16)]">
-          <div className="relative min-h-[270px] bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-700 p-8 text-white">
+        <div className="overflow-hidden rounded-4xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.16)]">
+          <div className="relative min-h-67.5 bg-linear-to-br from-neutral-950 via-neutral-900 to-neutral-700 p-8 text-white">
             <div className="absolute right-8 top-8 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/20 bg-white/10 font-bold backdrop-blur">
               H
             </div>
@@ -16,12 +148,14 @@ export default function Page(): React.JSX.Element {
               Digital Pass
             </p>
 
-            <h1 className="mt-3 text-2xl font-semibold">HEALIX TEST</h1>
+            <h1 className="mt-3 text-2xl font-semibold">HEALIX PASS</h1>
 
             <div className="mt-20">
               <p className="text-sm text-white/50">Card holder</p>
 
-              <p className="mt-1 text-3xl font-medium">Taylor Spear</p>
+              <p className="mt-1 text-3xl font-medium">
+                {formData.firstName} {formData.lastName}
+              </p>
 
               <p className="mt-2 text-sm text-white/60">
                 Location-aware digital membership card
