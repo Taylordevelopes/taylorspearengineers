@@ -110,7 +110,7 @@ export default function Page(): React.JSX.Element {
   };
 
   return (
-    <main className="min-h-screen bg-[#f2f1ed] px-3 py-4 text-[#171717]">
+    <main className="min-h-screen  px-3 py-4 text-[#171717]">
       <div className="mx-auto w-full max-w-md text-center">
         <div className="flex justify-center">
           <div className="relative inline-block">
