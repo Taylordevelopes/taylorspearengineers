@@ -10,6 +10,7 @@ type Player = {
   email: string;
   code: number;
   created_at: string;
+  name: string;
 };
 
 type LoginResponse = {

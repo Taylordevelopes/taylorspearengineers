@@ -386,7 +386,7 @@ export default function Page(): React.JSX.Element {
 
         <div className="mb-2 flex items-center justify-between px-2">
           <p className="font-black tracking-tight">
-            <span>SCORE:</span>{" "}
+            <span>{player?.name.split(" ")[0]}:</span>
             <span className="text-[#FFD166]">{currentPoints}</span>
           </p>
 
