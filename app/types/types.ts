@@ -5,6 +5,13 @@ type User = {
   created_at: string;
 };
 
+type Player = {
+  id: string;
+  email: string;
+  code: number;
+  created_at: string;
+};
+
 type LoginResponse = {
   message: string;
   token: string;
@@ -40,4 +47,4 @@ type Apps = {
   updated_at: string;
 };
 
-export type { User, LoginResponse, BlogPost, Apps };
+export type { User, LoginResponse, BlogPost, Apps, Player };
