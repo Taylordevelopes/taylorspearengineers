@@ -42,7 +42,7 @@ export default function Home() {
           Switching Servers and Making upgrades be back soon.
         </p>
         <div>
-          <CountdownTimer targetDate="2026-08-07T00:00:00" />
+          <CountdownTimer targetDate="2026-08-10T00:00:00" />
         </div>
       </div>
     );
