@@ -34,45 +34,61 @@ export default function Page(): React.JSX.Element {
 
   useEffect(() => {
     const loadPass = async () => {
-      try {
-        setIsLoading(true);
-        setLoadError("");
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get("email");
 
-        const params = new URLSearchParams(window.location.search);
-        const email = params.get("email");
-
-        if (!email) {
-          throw new Error("Member email was not provided.");
-        }
-
-        const response = await fetch(
-          `https://api.spearitual.xyz/members/pass?email=${encodeURIComponent(
-            email,
-          )}`,
-        );
-
-        const data: PassResponse | { error: string } = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            "error" in data ? data.error : "Unable to load your Healix pass.",
-          );
-        }
-
-        const passData = data as PassResponse;
-
-        setMember(passData.member);
-        setWalletLinks(passData.wallet);
-        setBarcodeUrl(passData.barcodeUrl);
-      } catch (error) {
-        setLoadError(
-          error instanceof Error
-            ? error.message
-            : "Unable to load your Healix pass.",
-        );
-      } finally {
+      if (!email) {
+        setLoadError("Member email was not provided.");
         setIsLoading(false);
+        return;
       }
+
+      const maxAttempts = 10;
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          const response = await fetch(
+            `https://api.spearitual.xyz/members/pass?email=${encodeURIComponent(
+              email,
+            )}`,
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+
+            setMember(data.member);
+            setWalletLinks(data.wallet);
+            setBarcodeUrl(data.barcodeUrl);
+            setIsLoading(false);
+
+            return;
+          }
+
+          if (response.status === 404) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            continue;
+          }
+
+          throw new Error("Unable to load your Healix pass.");
+        } catch (error) {
+          if (attempt === maxAttempts) {
+            setLoadError(
+              error instanceof Error
+                ? error.message
+                : "Unable to load your Healix pass.",
+            );
+
+            setIsLoading(false);
+          }
+        }
+      }
+
+      setLoadError(
+        "Your Healix pass is taking longer than expected. Please refresh and try again.",
+      );
+
+      setIsLoading(false);
     };
 
     loadPass();
@@ -81,9 +97,20 @@ export default function Page(): React.JSX.Element {
   if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-black px-4">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#00ff00]">
-          Generating Your Healix Pass...
-        </p>
+        <div className="w-full max-w-sm text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#00ff00]">
+            Generating Your Healix Pass...
+          </p>
+
+          <p className="mt-3 text-sm text-white/60">
+            Please wait while we prepare your digital membership.
+          </p>
+
+          {/* Loading Bar */}
+          <div className="mt-8 h-2 w-full overflow-hidden bg-white/10">
+            <div className="loading-bar h-full w-1/3 bg-[#00ff00]" />
+          </div>
+        </div>
       </main>
     );
   }
