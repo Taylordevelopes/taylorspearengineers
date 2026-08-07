@@ -220,7 +220,7 @@ export default function Page(): React.JSX.Element {
           </div>
         )}
 
-        <div className="mt-6 flex items-center justify-center gap-2">
+        <div className=" flex items-center justify-center gap-2">
           <span className="text-xs font-medium uppercase tracking-[0.15em] text-white/60">
             Powered by
           </span>
