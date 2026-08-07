@@ -1,10 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { getWalletPassUrl } from "../lib/api/wallet";
+import { memberSignUp } from "../lib/api/healixMembers";
+
+type WalletLinks = {
+  appleUrl: string;
+  googleUrl: string;
+};
 
 export default function Page(): React.JSX.Element {
-  const walletPassUrl = getWalletPassUrl();
   const [showForm, setShowForm] = useState(true);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -15,9 +19,37 @@ export default function Page(): React.JSX.Element {
     answer: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    console.log(formData);
-    setShowForm(false);
+  const [walletLinks, setWalletLinks] = useState<WalletLinks | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      setIsSubmitting(true);
+      setSubmitError("");
+
+      const data = await memberSignUp({
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        city: formData.city.trim(),
+        answer: formData.answer.trim(),
+        emailOptIn: false,
+      });
+
+      setWalletLinks(data.wallet);
+      setShowForm(false);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Unable to process your membership",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (showForm)
@@ -128,9 +160,14 @@ export default function Page(): React.JSX.Element {
             />
           </Form.Group>
 
-          <Button variant="dark" type="submit">
-            Save Changes
+          <Button variant="dark" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Creating Pass..." : "Create Digital Pass"}
           </Button>
+          {submitError && (
+            <p className="mb-3 text-sm font-semibold text-red-600">
+              {submitError}
+            </p>
+          )}
         </Form>
       </main>
     );
@@ -181,22 +218,41 @@ export default function Page(): React.JSX.Element {
               </div>
             </div>
 
-            <a
-              href={walletPassUrl}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-black px-5 py-4 text-white transition hover:bg-neutral-800 active:scale-[0.98]"
-            >
-              <AppleIcon />
+            {walletLinks?.appleUrl && (
+              <a
+                href={walletLinks.appleUrl}
+                className="flex w-full items-center justify-center gap-3 rounded-2xl bg-black px-5 py-4 text-white transition hover:bg-neutral-800 active:scale-[0.98]"
+              >
+                <AppleIcon />
 
-              <span className="text-left leading-tight">
-                <span className="block text-[10px] font-medium uppercase tracking-wide text-white/70">
-                  Add to
-                </span>
+                <span className="text-left leading-tight">
+                  <span className="block text-[10px] font-medium uppercase tracking-wide text-white/70">
+                    Add to
+                  </span>
 
-                <span className="block text-lg font-semibold">
-                  Apple Wallet
+                  <span className="block text-lg font-semibold">
+                    Apple Wallet
+                  </span>
                 </span>
-              </span>
-            </a>
+              </a>
+            )}
+
+            {walletLinks?.googleUrl && (
+              <a
+                href={walletLinks.googleUrl}
+                className="flex w-full items-center justify-center rounded-2xl bg-black px-5 py-4 text-white transition hover:bg-neutral-800 active:scale-[0.98]"
+              >
+                <span className="text-left leading-tight">
+                  <span className="block text-[10px] font-medium uppercase tracking-wide text-white/70">
+                    Add to
+                  </span>
+
+                  <span className="block text-lg font-semibold">
+                    Google Wallet
+                  </span>
+                </span>
+              </a>
+            )}
 
             <p className="text-center text-xs text-neutral-400">
               Open this page in Safari on an iPhone.
