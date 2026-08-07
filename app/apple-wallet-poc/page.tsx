@@ -11,6 +11,7 @@ type WalletLinks = {
 
 export default function Page(): React.JSX.Element {
   const [showForm, setShowForm] = useState(true);
+  const [barcodeUrl, setBarcodeUrl] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -22,6 +23,7 @@ export default function Page(): React.JSX.Element {
 
   const [walletLinks, setWalletLinks] = useState<WalletLinks | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [member, setMember] = useState<any>(null);
   const [submitError, setSubmitError] = useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,6 +45,8 @@ export default function Page(): React.JSX.Element {
       console.log("Signup response:", data);
       console.log("Google URL:", data.wallet?.googleUrl);
       setWalletLinks(data.wallet);
+      setBarcodeUrl(data.barcodeUrl);
+
       setShowForm(false);
     } catch (error) {
       setSubmitError(
@@ -176,21 +180,21 @@ export default function Page(): React.JSX.Element {
     );
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#efefec] px-4 py-10">
+    <main className="flex min-h-screen items-center justify-center bg-black px-4 py-10">
       <div className="w-full max-w-sm">
         {/* Digital card preview */}
         <div className="relative overflow-hidden rounded-[10px] bg-[#00ff00] px-6 pb-7 pt-6 text-black shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
           <p className="text-lg font-semibold tracking-tight">Healix</p>
           <div className="mt-8 flex items-start justify-between">
             <div>
-              <p className="mb-0 text-[10px] font-semibold  uppercase tracking-[0.2em] ">
+              <p className="mb-0 text-[10px] font-extrabold   uppercase tracking-[0.2em] ">
                 Healix Status
               </p>
 
-              <p className=" text-2xl font-normal leading-none">Active</p>
+              <p className=" text-4xl font-semibold leading-none">Active</p>
             </div>
 
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black p-2 shadow-lg">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden  bg-black p-2 shadow-lg">
               <Image
                 src="/healix-symbol.png"
                 alt="Healix"
@@ -203,39 +207,43 @@ export default function Page(): React.JSX.Element {
           </div>
 
           {/* Encounter points */}
-          <div className="mt-8">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em]">
+          <div className="mt-2">
+            <p className=" mb-0! mt-0.5 text-[10px] font-extrabold  uppercase tracking-[0.2em]">
               Encounter Points
             </p>
 
-            <p className="mt-1   leading-none">0</p>
+            <p className="mt-1 font-normal leading-none">0</p>
           </div>
 
           {/* Member details */}
-          <div className="mt-9 grid grid-cols-2 gap-5">
+          <div className="mt-6 flex items-start justify-between">
             <div>
-              <p className="text-[9px] font-semibold  uppercase tracking-[0.2em]">
+              <p className="mb-0! mt-0.5 text-[9px] font-extrabold   uppercase tracking-[0.2em]">
                 Name
               </p>
 
-              <p className="mt-1 font-light leading-tight">
+              <p className="mt-1 font-normal leading-tight">
                 {formData.firstName} {formData.lastName}
               </p>
             </div>
 
             <div>
-              <p className="text-[9px] font-semibold  uppercase tracking-[0.2em]">
+              <p className="mb-0! mt-0.5 text-[9px] font-extrabold  uppercase tracking-[0.2em]">
                 Designation
               </p>
 
-              <p className="mt-1 font-light uppercase">Enrolled</p>
+              <p className="mt-1 font-normal uppercase">Enrolled</p>
             </div>
           </div>
 
-          <div className="mt-8 border-t border-black/20 pt-4">
-            <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-black/60">
-              Healix Digital Membership
-            </p>
+          <div className="mt-20 flex flex-col items-center">
+            <img
+              src={barcodeUrl}
+              alt="Healix Member Barcode"
+              className="h-auto w-full max-w-[340px]"
+            />
+
+            <p className="mt-2 text-sm tracking-[0.15em]">{member?.id}</p>
           </div>
         </div>
 
@@ -302,12 +310,15 @@ function AppleIcon(): React.JSX.Element {
     </svg>
   );
 }
-
 function GoogleWalletIcon(): React.JSX.Element {
   return (
-    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-sm  text-black">
-      G
-    </div>
+    <Image
+      src="/google-g.png"
+      alt="Google Wallet"
+      width={36}
+      height={36}
+      className="h-9 w-9 object-contain"
+    />
   );
 }
 
