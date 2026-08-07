@@ -39,6 +39,8 @@ export default function Page(): React.JSX.Element {
         emailOptIn: false,
       });
 
+      console.log("Signup response:", data);
+      console.log("Google URL:", data.wallet?.googleUrl);
       setWalletLinks(data.wallet);
       setShowForm(false);
     } catch (error) {
