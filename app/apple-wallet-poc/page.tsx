@@ -269,8 +269,14 @@ export default function Page(): React.JSX.Element {
           )}
 
           {walletLinks?.googleUrl && (
-            <a
-              href={walletLinks.googleUrl}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                window.location.href = walletLinks.googleUrl;
+              }}
               className="flex w-full items-center justify-center gap-3 rounded-2xl bg-black px-5 py-4 text-white shadow-md transition hover:bg-neutral-800 active:scale-[0.98]"
             >
               <GoogleWalletIcon />
@@ -284,7 +290,7 @@ export default function Page(): React.JSX.Element {
                   Google Wallet
                 </span>
               </span>
-            </a>
+            </button>
           )}
         </div>
 
