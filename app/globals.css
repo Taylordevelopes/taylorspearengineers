@@ -28,3 +28,21 @@
 textarea.healix-input {
   resize: none;
 }
+
+.loading-bar {
+  animation: loading-slide 1.4s ease-in-out infinite;
+}
+
+@keyframes loading-slide {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  50% {
+    transform: translateX(120%);
+  }
+
+  100% {
+    transform: translateX(320%);
+  }
+}

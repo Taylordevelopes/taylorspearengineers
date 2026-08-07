@@ -33,6 +33,11 @@ export default function Page(): React.JSX.Element {
   const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
+    let cancelled = false;
+
+    const wait = (milliseconds: number) =>
+      new Promise((resolve) => setTimeout(resolve, milliseconds));
+
     const loadPass = async () => {
       const params = new URLSearchParams(window.location.search);
       const email = params.get("email");
@@ -43,57 +48,72 @@ export default function Page(): React.JSX.Element {
         return;
       }
 
-      const maxAttempts = 10;
+      setIsLoading(true);
+      setLoadError("");
 
-      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      let attempt = 0;
+
+      while (!cancelled) {
+        attempt++;
+
         try {
+          console.log(`Healix pass lookup attempt ${attempt}`);
+
           const response = await fetch(
             `https://api.spearitual.xyz/members/pass?email=${encodeURIComponent(
               email,
             )}`,
+            {
+              cache: "no-store",
+            },
           );
 
-          if (response.ok) {
-            const data = await response.json();
+          // Actual server problem.
+          if (!response.ok) {
+            console.log(`Healix API returned ${response.status}. Retrying...`);
 
+            await wait(1500);
+            continue;
+          }
+
+          const data = await response.json();
+
+          // Wix automation has not created the member yet.
+          if (!data.ready) {
+            console.log("Healix member is not ready yet.");
+
+            await wait(1000);
+            continue;
+          }
+
+          // Member exists. We are finished polling.
+          if (!cancelled) {
             setMember(data.member);
             setWalletLinks(data.wallet);
             setBarcodeUrl(data.barcodeUrl);
             setIsLoading(false);
-
-            return;
           }
 
-          if (response.status === 404) {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            continue;
-          }
-
-          throw new Error("Unable to load your Healix pass.");
+          return;
         } catch (error) {
-          if (attempt === maxAttempts) {
-            setLoadError(
-              error instanceof Error
-                ? error.message
-                : "Unable to load your Healix pass.",
-            );
+          // Safari/network/DNS temporarily failed.
+          // Don't expose this to the customer.
+          console.log(
+            `Temporary Healix connection issue on attempt ${attempt}:`,
+            error,
+          );
 
-            setIsLoading(false);
-          }
+          await wait(1500);
         }
       }
-
-      setLoadError(
-        "Your Healix pass is taking longer than expected. Please refresh and try again.",
-      );
-
-      setIsLoading(false);
     };
 
     loadPass();
-  }, []);
 
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-black px-4">
@@ -106,7 +126,6 @@ export default function Page(): React.JSX.Element {
             Please wait while we prepare your digital membership.
           </p>
 
-          {/* Loading Bar */}
           <div className="mt-8 h-2 w-full overflow-hidden bg-white/10">
             <div className="loading-bar h-full w-1/3 bg-[#00ff00]" />
           </div>
@@ -114,7 +133,6 @@ export default function Page(): React.JSX.Element {
       </main>
     );
   }
-
   if (loadError || !member) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-black px-6">
