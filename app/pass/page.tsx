@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import logo from "../../public/SpearitualCompany_logo_white.png";
 
 type WalletLinks = {
   appleUrl: string;
@@ -209,7 +210,7 @@ export default function Page(): React.JSX.Element {
         {showGoogleComingSoon && (
           <div className="mt-3 rounded-xl border border-neutral-300 bg-neutral-100 p-3 text-center">
             <p className="text-sm font-medium text-neutral-700">
-              Google Wallet support is currently provisioning
+              Google Wallet support coming soon.
             </p>
 
             <p className="mt-1 text-xs text-neutral-500">
@@ -219,11 +220,17 @@ export default function Page(): React.JSX.Element {
           </div>
         )}
 
-        <div className="mt-5 rounded-2xl bg-white px-4 py-3 text-center shadow-sm">
-          <p className="text-xs leading-5 text-neutral-500">
-            Choose the wallet supported by your device to save your Healix
-            membership card.
-          </p>
+        <div className="mt-6 flex items-center justify-center gap-2">
+          <span className="text-xs font-medium uppercase tracking-[0.15em] text-white/60">
+            Powered by
+          </span>
+
+          <Image
+            src={logo}
+            alt="Spearitual Company"
+            width={100}
+            className="h-auto object-contain"
+          />
         </div>
       </div>
     </main>
