@@ -35,8 +35,8 @@ export default function Page(): React.JSX.Element {
   useEffect(() => {
     let cancelled = false;
 
-    const wait = (milliseconds: number) =>
-      new Promise((resolve) => setTimeout(resolve, milliseconds));
+    const wait = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
 
     const loadPass = async () => {
       const params = new URLSearchParams(window.location.search);
@@ -51,14 +51,8 @@ export default function Page(): React.JSX.Element {
       setIsLoading(true);
       setLoadError("");
 
-      let attempt = 0;
-
       while (!cancelled) {
-        attempt++;
-
         try {
-          console.log(`Healix pass lookup attempt ${attempt}`);
-
           const response = await fetch(
             `https://api.spearitual.xyz/members/pass?email=${encodeURIComponent(
               email,
@@ -68,40 +62,48 @@ export default function Page(): React.JSX.Element {
             },
           );
 
-          // Actual server problem.
-          if (!response.ok) {
-            console.log(`Healix API returned ${response.status}. Retrying...`);
+          // Member has not been created yet.
+          // Keep loading and try again.
+          if (response.status === 404) {
+            await wait(1000);
+            continue;
+          }
 
+          // Temporary server issue.
+          if (
+            response.status === 502 ||
+            response.status === 503 ||
+            response.status === 504
+          ) {
+            await wait(1500);
+            continue;
+          }
+
+          // Something genuinely unexpected happened.
+          if (!response.ok) {
             await wait(1500);
             continue;
           }
 
           const data = await response.json();
 
-          // Wix automation has not created the member yet.
-          if (!data.ready) {
-            console.log("Healix member is not ready yet.");
+          // Member exists — we're done polling.
+          if (data.member) {
+            if (!cancelled) {
+              setMember(data.member);
+              setWalletLinks(data.wallet);
+              setBarcodeUrl(data.barcodeUrl);
+              setIsLoading(false);
+            }
 
-            await wait(1000);
-            continue;
+            return;
           }
 
-          // Member exists. We are finished polling.
-          if (!cancelled) {
-            setMember(data.member);
-            setWalletLinks(data.wallet);
-            setBarcodeUrl(data.barcodeUrl);
-            setIsLoading(false);
-          }
-
-          return;
+          // Unexpected response shape.
+          await wait(1000);
         } catch (error) {
-          // Safari/network/DNS temporarily failed.
-          // Don't expose this to the customer.
-          console.log(
-            `Temporary Healix connection issue on attempt ${attempt}:`,
-            error,
-          );
+          // Safari / Wi-Fi / DNS / temporary network failure.
+          console.log("Temporary pass lookup failure:", error);
 
           await wait(1500);
         }
