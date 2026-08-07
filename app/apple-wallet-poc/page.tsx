@@ -25,6 +25,7 @@ export default function Page(): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [member, setMember] = useState<any>(null);
   const [submitError, setSubmitError] = useState("");
+  const [showGoogleComingSoon, setShowGoogleComingSoon] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -269,30 +270,36 @@ export default function Page(): React.JSX.Element {
           )}
 
           {walletLinks?.googleUrl && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                window.location.href = walletLinks.googleUrl;
-              }}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-black px-5 py-4 text-white shadow-md transition hover:bg-neutral-800 active:scale-[0.98]"
+            <div
+              onClick={() => setShowGoogleComingSoon(true)}
+              className="flex cursor-pointer items-center justify-center gap-3 py-4 text-neutral-500 transition hover:text-neutral-300"
             >
               <GoogleWalletIcon />
 
-              <span className="text-left leading-tight">
-                <span className="block text-[10px] font-medium uppercase tracking-wide text-white/70">
-                  Add to
+              <div className="text-left leading-tight">
+                <span className="block text-[10px] uppercase tracking-[0.2em]">
+                  Coming Soon
                 </span>
 
                 <span className="block text-lg font-semibold">
                   Google Wallet
                 </span>
-              </span>
-            </button>
+              </div>
+            </div>
           )}
         </div>
+        {showGoogleComingSoon && (
+          <div className="mt-3 rounded-xl border border-neutral-300 bg-neutral-100 p-3 text-center">
+            <p className="text-sm font-medium text-neutral-700">
+              Google Wallet support is currently provisioning
+            </p>
+
+            <p className="mt-1 text-xs text-neutral-500">
+              Apple Wallet is available today. Google Wallet will be enabled
+              automatically once provision is complete.
+            </p>
+          </div>
+        )}
 
         <div className="mt-5 rounded-2xl bg-white px-4 py-3 text-center shadow-sm">
           <p className="text-xs leading-5 text-neutral-500">
