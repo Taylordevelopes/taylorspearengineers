@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { memberSignUp } from "../lib/api/healixMembers";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 type WalletLinks = {
@@ -9,176 +8,94 @@ type WalletLinks = {
   googleUrl: string;
 };
 
-export default function Page(): React.JSX.Element {
-  const [showForm, setShowForm] = useState(true);
-  const [barcodeUrl, setBarcodeUrl] = useState("");
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    city: "",
-    answer: "",
-  });
+type Member = {
+  id: string;
+  name: string;
+  email: string;
+  city?: string;
+  phone?: string;
+};
 
+type PassResponse = {
+  member: Member;
+  wallet: WalletLinks;
+  barcodeUrl: string;
+};
+
+export default function Page(): React.JSX.Element {
+  const [member, setMember] = useState<Member | null>(null);
   const [walletLinks, setWalletLinks] = useState<WalletLinks | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [member, setMember] = useState<any>(null);
-  const [submitError, setSubmitError] = useState("");
+  const [barcodeUrl, setBarcodeUrl] = useState("");
   const [showGoogleComingSoon, setShowGoogleComingSoon] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
-    try {
-      setIsSubmitting(true);
-      setSubmitError("");
+  useEffect(() => {
+    const loadPass = async () => {
+      try {
+        setIsLoading(true);
+        setLoadError("");
 
-      const data = await memberSignUp({
-        name: `${formData.firstName} ${formData.lastName}`.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim(),
-        city: formData.city.trim(),
-        answer: formData.answer.trim(),
-        emailOptIn: false,
-      });
+        const params = new URLSearchParams(window.location.search);
+        const email = params.get("email");
 
-      console.log("Signup response:", data);
-      console.log("Google URL:", data.wallet?.googleUrl);
-      setWalletLinks(data.wallet);
-      setBarcodeUrl(data.barcodeUrl);
+        if (!email) {
+          throw new Error("Member email was not provided.");
+        }
 
-      setShowForm(false);
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "Unable to process your membership",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+        const response = await fetch(
+          `https://api.spearitual.xyz/members/pass?email=${encodeURIComponent(
+            email,
+          )}`,
+        );
 
-  if (showForm)
+        const data: PassResponse | { error: string } = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            "error" in data ? data.error : "Unable to load your Healix pass.",
+          );
+        }
+
+        const passData = data as PassResponse;
+
+        setMember(passData.member);
+        setWalletLinks(passData.wallet);
+        setBarcodeUrl(passData.barcodeUrl);
+      } catch (error) {
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : "Unable to load your Healix pass.",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPass();
+  }, []);
+
+  if (isLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#efefec] px-4 py-12">
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="editfirstName">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                }))
-              }
-              placeholder="First Name"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="editAppDescription">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                }))
-              }
-              placeholder="Last Name"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="editAppEmail">
-            <Form.Label>Email Address</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              value={formData.email || ""}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                }))
-              }
-              placeholder="Enter email address"
-            />
-            <Form.Text className="text-muted">
-              We will never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="editAppPhone">
-            <Form.Label>Phone Number</Form.Label>
-            <Form.Control
-              type="tel"
-              name="phone"
-              value={formData.phone || ""}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                }))
-              }
-              placeholder="Enter phone number"
-            />
-            <Form.Text className="text-muted">
-              Include country code for international numbers.
-            </Form.Text>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="editAppCity">
-            <Form.Label>City</Form.Label>
-            <Form.Control
-              type="text"
-              name="city"
-              value={formData.city || ""}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                }))
-              }
-              placeholder="Enter city name"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="appDescription">
-            <Form.Label>Do you believe art heals? Why?</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="answer"
-              value={formData.answer}
-              placeholder="Type your answer here"
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                }))
-              }
-            />
-          </Form.Group>
-
-          <Button variant="dark" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Creating Pass..." : "Create Digital Pass"}
-          </Button>
-          {submitError && (
-            <p className="mb-3 text-sm font-semibold text-red-600">
-              {submitError}
-            </p>
-          )}
-        </Form>
+      <main className="flex min-h-screen items-center justify-center bg-black px-4">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#00ff00]">
+          Generating Your Healix Pass...
+        </p>
       </main>
     );
+  }
+
+  if (loadError || !member) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-black px-6">
+        <p className="max-w-sm text-center text-sm font-semibold text-red-400">
+          {loadError || "Unable to load your Healix pass."}
+        </p>
+      </main>
+    );
+  }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-black px-4 py-10">
@@ -186,16 +103,17 @@ export default function Page(): React.JSX.Element {
         {/* Digital card preview */}
         <div className="relative overflow-hidden rounded-[10px] bg-[#00ff00] px-6 pb-7 pt-6 text-black shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
           <p className="text-lg font-semibold tracking-tight">Healix</p>
+
           <div className="mt-8 flex items-start justify-between">
             <div>
-              <p className="mb-0 text-[10px] font-extrabold   uppercase tracking-[0.2em] ">
+              <p className="mb-0 text-[10px] font-extrabold uppercase tracking-[0.2em]">
                 Healix Status
               </p>
 
-              <p className=" text-4xl font-semibold leading-none">Active</p>
+              <p className="text-4xl font-semibold leading-none">Active</p>
             </div>
 
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden  bg-black p-2 shadow-lg">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden bg-black p-2 shadow-lg">
               <Image
                 src="/healix-symbol.png"
                 alt="Healix"
@@ -209,7 +127,7 @@ export default function Page(): React.JSX.Element {
 
           {/* Encounter points */}
           <div className="mt-2">
-            <p className=" mb-0! mt-0.5 text-[10px] font-extrabold  uppercase tracking-[0.2em]">
+            <p className="mb-0 mt-0.5 text-[10px] font-extrabold uppercase tracking-[0.2em]">
               Encounter Points
             </p>
 
@@ -219,17 +137,15 @@ export default function Page(): React.JSX.Element {
           {/* Member details */}
           <div className="mt-6 flex items-start justify-between">
             <div>
-              <p className="mb-0! mt-0.5 text-[9px] font-extrabold   uppercase tracking-[0.2em]">
+              <p className="mb-0 mt-0.5 text-[9px] font-extrabold uppercase tracking-[0.2em]">
                 Name
               </p>
 
-              <p className="mt-1 font-normal leading-tight">
-                {formData.firstName} {formData.lastName}
-              </p>
+              <p className="mt-1 font-normal leading-tight">{member.name}</p>
             </div>
 
             <div>
-              <p className="mb-0! mt-0.5 text-[9px] font-extrabold  uppercase tracking-[0.2em]">
+              <p className="mb-0 mt-0.5 text-[9px] font-extrabold uppercase tracking-[0.2em]">
                 Designation
               </p>
 
@@ -237,14 +153,17 @@ export default function Page(): React.JSX.Element {
             </div>
           </div>
 
+          {/* Barcode */}
           <div className="mt-20 flex flex-col items-center">
-            <img
-              src={barcodeUrl}
-              alt="Healix Member Barcode"
-              className="h-auto w-full max-w-[340px]"
-            />
+            {barcodeUrl && (
+              <img
+                src={barcodeUrl}
+                alt="Healix Member Barcode"
+                className="h-auto w-full max-w-[340px]"
+              />
+            )}
 
-            <p className="mt-2 text-sm tracking-[0.15em]">{member?.id}</p>
+            <p className="mt-2 text-sm tracking-[0.15em]">{member.id}</p>
           </div>
         </div>
 
@@ -288,6 +207,7 @@ export default function Page(): React.JSX.Element {
             </div>
           )}
         </div>
+
         {showGoogleComingSoon && (
           <div className="mt-3 rounded-xl border border-neutral-300 bg-neutral-100 p-3 text-center">
             <p className="text-sm font-medium text-neutral-700">
@@ -323,6 +243,7 @@ function AppleIcon(): React.JSX.Element {
     </svg>
   );
 }
+
 function GoogleWalletIcon(): React.JSX.Element {
   return (
     <Image
@@ -332,25 +253,5 @@ function GoogleWalletIcon(): React.JSX.Element {
       height={36}
       className="h-9 w-9 object-contain"
     />
-  );
-}
-
-function LocationIcon(): React.JSX.Element {
-  return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white shadow-sm">
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        className="h-5 w-5 fill-none stroke-black"
-        strokeWidth="2"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"
-        />
-        <circle cx="12" cy="9" r="2.3" />
-      </svg>
-    </div>
   );
 }
