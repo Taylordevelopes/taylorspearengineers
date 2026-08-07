@@ -162,8 +162,6 @@ export default function Page(): React.JSX.Element {
                 className="h-auto w-full max-w-[340px]"
               />
             )}
-
-            <p className="mt-2 text-sm tracking-[0.15em]">{member.id}</p>
           </div>
         </div>
 
