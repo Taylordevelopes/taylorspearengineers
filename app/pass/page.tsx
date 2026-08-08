@@ -150,7 +150,7 @@ export default function Page(): React.JSX.Element {
       <div className="w-full max-w-sm">
         {/* Digital card preview */}
         <div className="relative overflow-hidden rounded-[10px] bg-[#00ff00] px-6 pb-7 pt-6 text-black shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
-          <p className="text-lg font-semibold tracking-tight">Healix</p>
+          <p className="text-lg font-semibold tracking-tight">HEALIX Pass</p>
 
           <div className="mt-8 flex items-start justify-between">
             <div>
@@ -161,12 +161,12 @@ export default function Page(): React.JSX.Element {
               <p className="text-4xl font-semibold leading-none">Active</p>
             </div>
 
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden bg-black p-2 shadow-lg">
+            <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden  p-2 ">
               <Image
-                src="/healix-symbol.png"
+                src="/healix-logo.png"
                 alt="Healix"
-                width={80}
-                height={80}
+                width={180}
+                height={180}
                 className="h-full w-full object-contain"
                 priority
               />
